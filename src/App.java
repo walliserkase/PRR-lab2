@@ -14,7 +14,8 @@ public class App {
     private Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws RemoteException {
-        App app = new App(0);
+        int id = Integer.parseInt(args[0]);
+        App app = new App(id);
         app.rmiInit();
         while(true) {
             app.menu();
