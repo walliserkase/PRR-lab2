@@ -141,6 +141,12 @@ public class LamportManager extends UnicastRemoteObject implements ILamportManag
     @Override
     public void requestCriticalSection() throws RemoteException {
         if(!isCSRequested) {
+            isCSRequested = true;
+            logicalClock++;
+            Message request = new Message(MessageType.REQ, logicalClock, id);
+            messages[id] = request;
+            sendAll(request);
+
             while(!canAccessCriticalSection()) {
                 try {
                     Thread.sleep(POOLING_DELAY);
@@ -148,12 +154,6 @@ public class LamportManager extends UnicastRemoteObject implements ILamportManag
                     e.printStackTrace();
                 }
             }
-
-            isCSRequested = true;
-            logicalClock++;
-            Message request = new Message(MessageType.REQ, logicalClock, id);
-            messages[id] = request;
-            sendAll(request);
         }
     }
 
